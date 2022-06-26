@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+<h1>{% if section == 'create' %}Add new{% else %}Edit post{% endif %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form action="." method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button class="submit" type="submit">
+		{% if section == 'create' %}Create{% else %}Update{% endif %}
+	</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if tag %}
+	<p>Posts tagged with "{{ tag }}"</p>
+{% endif %}
+
+{% for post in posts %}
+	{% include 'blog/_post.html' with post=post %}
+{% endfor %}
+
+{% include '_pagination.html' with items=posts %}
+
+{% endblock %}
