@@ -8,6 +8,11 @@ from taggit.managers import TaggableManager
 from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFill
 
+from django.core.validators import MinLengthValidator
+
+content_validator = MinLengthValidator(
+    limit_value=300, message="Content should be at least 300 characters long!")
+
 
 class Tag(models.Model):
     title = models.CharField(max_length=20)
@@ -76,7 +81,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255,
                             unique_for_date='publish')
-    body = models.TextField()
+    body = models.TextField(validators=[content_validator])
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

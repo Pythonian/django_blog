@@ -1,6 +1,10 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator, InvalidPage
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import (
+    CreateView, DetailView, DeleteView, ListView, UpdateView)
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from taggit.models import Tag
 from django.db.models import Count
 from .models import Post
@@ -59,6 +63,15 @@ def detail(request, slug=None):
     template = 'blog/detail.html'
     context = {'section': 'blog_detail', 'post': post}
     return render(request, template, context)
+
+
+class PostListView(ListView):
+    model = Post
+    paginate_by = 3
+
+
+class PostDetailView(DetailView):
+    model = Post
 
 
 # def post_detail(request, year, month, day, slug):
@@ -175,3 +188,52 @@ def post_share(request, post_id):
     }
 
     return render(request, template, context)
+
+
+# class BlogCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+#     model = Blog
+#     fields = ['title', 'content']
+#     success_message = "Blog Created Successfully!"
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         return super().form_valid(form)
+
+
+# class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+#     model = Blog
+#     fields = ['title', 'content']
+#     success_message = "Blog Updated Successfully!"
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         return super().form_valid(form)
+
+#     def test_func(self):
+#         """
+#         This method puts the conditional pass for the
+#         UserPassesTestMixin to only allow access to this view
+#         if the currently logged-in user is the author of the Post
+#         """
+#         blog = self.get_object()
+#         if self.request.user == blog.author:
+#             return True
+#         else:
+#             return False
+
+
+# class BlogDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+#     model = Blog
+#     success_message = "Blog Deleted Successfully!"
+#     success_url = "/"
+
+#     def test_func(self):
+#         blog = self.get_object()
+#         if self.request.user == blog.author:
+#             return True
+#         else:
+#             return False
+
+#     def delete(self, request, *args, **kwargs):
+#         messages.success(self.request, self.success_message)
+#         return super().delete(request, *args, **kwargs)
